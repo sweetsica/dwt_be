@@ -70,7 +70,13 @@ class AuthController extends Controller
             $validated = Validator::make($request->all(), [
                 'name' => 'required',
                 'email' => 'required|email|unique:users',
-                'password' => 'required|min:6'
+                'password' => 'required|min:6',
+                'code' => 'required|min:6|unique:users',
+                'phone' => 'required',
+                'sex' => 'required',
+                'address' => 'required',
+                'dob' => 'required|date',
+                'doj' => 'required|date',
             ]);
             if ($validated->fails()) {
                 return $this->setStatusCode($this::BAD_REQUEST)
@@ -78,7 +84,16 @@ class AuthController extends Controller
                     ->setMessage('Register failed: validation error')
                     ->errorResponse();
             }
+
             $validated = $validated->validated();
+
+            if(!in_array($validated['sex'], ['male', 'female'])) {
+                return $this->setStatusCode($this::BAD_REQUEST)
+                ->setError("Sex can only be male or female")
+                ->setMessage('Register failed: Sex can only be male or female')
+                ->errorResponse();
+            }
+            
             $validated['role'] = 'user';
             //hash the password
             $validated['password'] = bcrypt($validated['password']);

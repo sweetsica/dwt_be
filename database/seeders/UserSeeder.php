@@ -19,6 +19,12 @@ class UserSeeder extends Seeder
             'email' => 'Steven.tran@tbht.vn',
             'password' => bcrypt('123456'),
             'role' => User::ROLES['admin'],
+            'code' => 'abc123',
+            'sex' => 'male',
+            'dob' => '1999-01-01',
+            'doj' => '2021-01-01',
+            'phone' => '0123456789',
+            'address' => 'Hanoi',
         ]);
 
         //user
@@ -27,6 +33,12 @@ class UserSeeder extends Seeder
             'email' => 'phohuy@tbht.vn',
             'password' => bcrypt('123456'),
             'role' => User::ROLES['user'],
+            'code' => 'abc456',
+            'sex' => 'male',
+            'dob' => '1999-01-01',
+            'doj' => '2021-01-01',
+            'phone' => '0123456789',
+            'address' => 'Hanoi',
         ]);
     }
 }

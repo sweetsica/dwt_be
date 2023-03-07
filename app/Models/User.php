@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -20,7 +21,13 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'code',
+        'sex',
+        'dob',
+        'doj',
+        'phone',
+        'address'
     ];
 
     /**
@@ -43,9 +50,10 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     // list roles
-    public  const ROLES = [
+    public const ROLES = [
         'user' => 'user',
         'admin' => 'admin',
+        'manager' => 'manager',
     ];
 
 
@@ -62,5 +70,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function targetDetails ()
+    {
+        return $this->hasMany(TargetDetail::class);
     }
 }
