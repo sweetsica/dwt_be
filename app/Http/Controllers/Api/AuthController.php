@@ -8,7 +8,9 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -27,7 +29,7 @@ class AuthController extends Controller
                 'password' => 'required',
             ]);
             if ($validated->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validated->errors())
                     ->setMessage('Login failed: validation error')
                     ->errorResponse();
@@ -39,7 +41,7 @@ class AuthController extends Controller
             if (!$user) {
                 return $this->setError('User not found')
                     ->setMessage('Login failed: Email not found')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
 
@@ -47,7 +49,7 @@ class AuthController extends Controller
             // this method will check the email and password and return the token
             if (!$token = auth()->attempt($validated)) {
                 return $this->setMessage('Login failed: email or password is incorrect')
-                    ->setStatusCode($this::UNAUTHORIZED)
+                    ->setStatusCode(Response::HTTP_UNAUTHORIZED)
                     ->errorResponse();
             }
             // auth()->user() will return the user
@@ -59,7 +61,7 @@ class AuthController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage('Login failed: ' . $e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -79,7 +81,7 @@ class AuthController extends Controller
                 'doj' => 'required|date',
             ]);
             if ($validated->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validated->errors())
                     ->setMessage('Register failed: validation error')
                     ->errorResponse();
@@ -88,12 +90,12 @@ class AuthController extends Controller
             $validated = $validated->validated();
 
             if(!in_array($validated['sex'], ['male', 'female'])) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                 ->setError("Sex can only be male or female")
                 ->setMessage('Register failed: Sex can only be male or female')
                 ->errorResponse();
             }
-            
+
             $validated['role'] = 'user';
             //hash the password
             $validated['password'] = bcrypt($validated['password']);
@@ -110,7 +112,7 @@ class AuthController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage('Register failed: ' . $e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -123,7 +125,7 @@ class AuthController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage('Logout failed: ' . $e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -139,7 +141,7 @@ class AuthController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage('Refresh token failed: ' . $e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -152,7 +154,7 @@ class AuthController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage('Fetch user failed: ' . $e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -167,7 +169,7 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 return $this->setError($validator->errors())
                     ->setMessage('Change password failed: validation error')
-                    ->setStatusCode($this::BAD_REQUEST)
+                    ->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->errorResponse();
             }
             $validated = $validator->validated();
@@ -178,14 +180,14 @@ class AuthController extends Controller
             if (!$user) {
                 return $this->setError('User not found')
                     ->setMessage('Change password failed: User not found')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
             //check if old password is correct
             if (!Hash::check($validated['oldPassword'], $user->password)) {
                 return $this->setError('Old password is incorrect')
                     ->setMessage('Change password failed: Old password is incorrect')
-                    ->setStatusCode($this::UNAUTHORIZED)
+                    ->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->errorResponse();
             }
             $user->password = bcrypt($validated['newPassword']);
@@ -194,7 +196,7 @@ class AuthController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage('Change password failed: ' . $e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }

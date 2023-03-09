@@ -9,6 +9,7 @@ use App\Models\TargetDetail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class TargetDetailController extends Controller
 {
@@ -51,10 +52,10 @@ class TargetDetailController extends Controller
                 ->paginate($limit);
 
             return $this->setData($targetDetailsPagianted)
-                ->setStatusCode($this::OK)
+                ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setErrorMessage($e->getMessage())
                 ->errorResponse();
         }
@@ -78,14 +79,14 @@ class TargetDetailController extends Controller
                 'managerManDay' => 'nullable',
             ]);
             if ($validator->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validator->errors())
                     ->setMessage($validator->errors()->first())
                     ->errorResponse();
             }
             $target = Target::find($request->target_id);
             if (!$target) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target not found or deleted')
                     ->setMessage('Create target detail failed')
                     ->errorResponse();
@@ -96,10 +97,10 @@ class TargetDetailController extends Controller
             $targetDetail = TargetDetail::create($newTargetDetail);
 
             return $this->setData($targetDetail)
-                ->setStatusCode($this::CREATED)
+                ->setStatusCode(Response::HTTP_CREATED)
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->errorResponse();
         }
@@ -111,17 +112,17 @@ class TargetDetailController extends Controller
             $targetDetail = TargetDetail::find($id);
 
             if (!$targetDetail) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target detail not found or deleted')
                     ->setMessage('Get target detail failed')
                     ->errorResponse();
             }
             $res = $targetDetail->load('target')->load('user')->load('targetLogs');
             return $this->setData($res)
-                ->setStatusCode($this::OK)
+                ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->errorResponse();
         }
@@ -144,7 +145,7 @@ class TargetDetailController extends Controller
                 'managerManDay' => 'nullable',
             ]);
             if ($validator->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validator->errors())
                     ->setMessage($validator->errors()->first())
                     ->errorResponse();
@@ -153,7 +154,7 @@ class TargetDetailController extends Controller
             if(request()->target_id) {
                 $target = Target::find(request()->target_id);
                 if (!$target) {
-                    return $this->setStatusCode($this::NOT_FOUND)
+                    return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                         ->setError('Target not found or deleted')
                         ->setMessage('Create target detail failed')
                         ->errorResponse();
@@ -163,7 +164,7 @@ class TargetDetailController extends Controller
             $targetDetail = TargetDetail::find($id);
 
             if (!$targetDetail) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target detail not found or deleted')
                     ->setMessage('Update target detail failed')
                     ->errorResponse();
@@ -172,11 +173,11 @@ class TargetDetailController extends Controller
             $targetDetail->update($data);
 
             return $this->setData($targetDetail)
-                ->setStatusCode($this::OK)
+                ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
 
         }catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->errorResponse();
         }
@@ -188,7 +189,7 @@ class TargetDetailController extends Controller
             $targetDetail = TargetDetail::find($id);
 
             if (!$targetDetail) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target detail not found or deleted')
                     ->setMessage('Delete target detail failed')
                     ->errorResponse();
@@ -197,11 +198,11 @@ class TargetDetailController extends Controller
             $targetDetail->delete();
 
             return $this->setData($targetDetail)
-                ->setStatusCode($this::OK)
+                ->setStatusCode(Response::HTTP_OK)
                 ->setMessage('Delete target detail successfully')
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->errorResponse();
         }

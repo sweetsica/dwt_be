@@ -13,6 +13,7 @@ class HealthController extends Controller
     public function index(Request $request)
     {
         return $this->setMessage('Server is running ' . 'php ' . phpversion() . ' ' . 'laravel ' . app()->version())
+            ->setStatusCode(200)
             ->successResponse();
     }
 

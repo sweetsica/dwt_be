@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -32,11 +33,12 @@ class UserController extends Controller
             $users = User::paginate($limit);
             return $this->setData($users)
                 ->setMessage('Get users successfully')
+                ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setError($e->getMessage())
                 ->setMessage('Get users failed')
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -47,7 +49,7 @@ class UserController extends Controller
             if (!$user) {
                 return $this->setError('User not found')
                     ->setMessage('Get user failed')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
             return $this->setData($user)
@@ -56,7 +58,7 @@ class UserController extends Controller
         } catch (Exception $e) {
             return $this->setError($e->getMessage())
                 ->setMessage('Get user failed')
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -77,7 +79,7 @@ class UserController extends Controller
                 'role' => 'required'
             ]);
             if ($validated->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validated->errors())
                     ->setMessage($validated->errors()->first())
                     ->errorResponse();
@@ -86,14 +88,14 @@ class UserController extends Controller
             $validated = $validated->validated();
 
             if (!in_array($validated['sex'], ['male', 'female'])) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError("Sex can only be male or female")
                     ->setMessage('Register failed: Sex can only be male or female')
                     ->errorResponse();
             }
             //only alow to create manager or user
             if (!in_array($validated['role'], ['manager', 'user'])) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError("Invalid role")
                     ->setMessage('Register failed: Invalid role')
                     ->errorResponse();
@@ -114,7 +116,7 @@ class UserController extends Controller
         } catch (Exception $exception) {
             return $this->setError($exception->getMessage())
                 ->setMessage('Create user failed')
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }

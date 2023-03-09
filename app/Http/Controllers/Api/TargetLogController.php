@@ -7,8 +7,10 @@ use App\Http\Traits\RESTResponse;
 use App\Models\TargetDetail;
 use App\Models\TargetLog;
 use Exception;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response as ResponseStatus;
 
 class TargetLogController extends Controller
 {
@@ -24,7 +26,7 @@ class TargetLogController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage($e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(ResponseStatus::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -35,7 +37,7 @@ class TargetLogController extends Controller
             $targetLog = TargetLog::find($id);
             if (!$targetLog) {
                 return $this->setMessage('Target Log not found')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(ResponseStatus::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
             return $this->setMessage('Target Log')
@@ -43,7 +45,7 @@ class TargetLogController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage($e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(ResponseStatus::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -64,22 +66,28 @@ class TargetLogController extends Controller
                 'reportedDate' => 'required|date',
             ]);
 
+            if ($validator->fails()) {
+                return $this->setMessage($validator->errors())
+                    ->setStatusCode(ResponseStatus::HTTP_BAD_REQUEST)
+                    ->errorResponse();
+            }
+
             $newTargetLog = $validator->validate();
             $existTargetDetail = TargetDetail::find($newTargetLog['target_detail_id']);
             if (!$existTargetDetail) {
                 return $this->setMessage('Target Detail not found')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(ResponseStatus::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
 
             $targetLog = TargetLog::create($newTargetLog);
             return $this->setMessage('Target Log created')
                 ->setData($targetLog)
-                ->setStatusCode($this::CREATED)
+                ->setStatusCode(ResponseStatus::HTTP_CREATED)
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage($e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(ResponseStatus::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -102,7 +110,7 @@ class TargetLogController extends Controller
             $targetLog = TargetLog::find($id);
             if (!$targetLog) {
                 return $this->setMessage('Target Log not found')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(ResponseStatus::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
             //check permission
@@ -110,7 +118,7 @@ class TargetLogController extends Controller
             if ($user->role != 'admin' || $user->role != 'manager') {
                 if ($user->id != $targetLog->targetDetail->user_id) {
                     return $this->setMessage('You do not have permission to update this Target Log')
-                        ->setStatusCode($this::UNAUTHORIZED)
+                        ->setStatusCode(ResponseStatus::HTTP_UNAUTHORIZED)
                         ->errorResponse();
                 }
             }
@@ -121,7 +129,7 @@ class TargetLogController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage($e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(ResponseStatus::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }
@@ -132,7 +140,7 @@ class TargetLogController extends Controller
             $targetLog = TargetLog::find($id);
             if (!$targetLog) {
                 return $this->setMessage('Target Log not found')
-                    ->setStatusCode($this::NOT_FOUND)
+                    ->setStatusCode(ResponseStatus::HTTP_NOT_FOUND)
                     ->errorResponse();
             }
             //check permission
@@ -140,7 +148,7 @@ class TargetLogController extends Controller
             if ($user->role != 'admin' || $user->role != 'manager') {
                 if ($user->id != $targetLog->targetDetail->user_id) {
                     return $this->setMessage('You do not have permission to delete this Target Log')
-                        ->setStatusCode($this::UNAUTHORIZED)
+                        ->setStatusCode(ResponseStatus::HTTP_UNAUTHORIZED)
                         ->errorResponse();
                 }
             }
@@ -150,11 +158,11 @@ class TargetLogController extends Controller
                 ->successResponse();
         } catch (Exception $e) {
             return $this->setMessage($e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(ResponseStatus::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         } catch (Exception $e) {
             return $this->setMessage($e->getMessage())
-                ->setStatusCode($this::INTERNAL_SERVER_ERROR)
+                ->setStatusCode(ResponseStatus::HTTP_INTERNAL_SERVER_ERROR)
                 ->errorResponse();
         }
     }

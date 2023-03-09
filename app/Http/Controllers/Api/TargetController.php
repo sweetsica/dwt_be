@@ -8,6 +8,7 @@ use App\Models\Target;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class TargetController extends Controller
 {
@@ -25,19 +26,19 @@ class TargetController extends Controller
                     // ->with('targetDetails')
                     ->paginate($limit);
 
-                return $this->setStatusCode($this::OK)
+                return $this->setStatusCode(Response::HTTP_OK)
                     ->setData($targets)
                     ->setMessage('Search targets successfully')
                     ->successResponse();
             }
             // $targets = Target::with('targetDetails')->paginate(10);
             $targets = Target::paginate($limit);
-            return $this->setStatusCode($this::OK)
+            return $this->setStatusCode(Response::HTTP_OK)
                 ->setData($targets)
                 ->setMessage('Get targets successfully')
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->setMessage('Get targets failed')
                 ->errorResponse();
@@ -49,17 +50,17 @@ class TargetController extends Controller
         try {
             $target = Target::find($id);
             if (!$target) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target not found')
                     ->setMessage('Get target failed')
                     ->errorResponse();
             }
-            return $this->setStatusCode($this::OK)
+            return $this->setStatusCode(Response::HTTP_OK)
                 ->setData($target)
                 ->setMessage('Get target successfully')
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->setMessage('Get target failed')
                 ->errorResponse();
@@ -75,19 +76,19 @@ class TargetController extends Controller
                 'description' => 'nullable',
             ]);
             if ($validator->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validator->errors())
                     ->setMessage($validator->errors()->first())
                     ->errorResponse();
             }
             $data = $validator->validated();
             $target = Target::create($data);
-            return $this->setStatusCode($this::CREATED)
+            return $this->setStatusCode(Response::HTTP_OK)
                 ->setData($target)
                 ->setMessage('Create target successfully')
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->setMessage('Create target failed')
                 ->errorResponse();
@@ -103,7 +104,7 @@ class TargetController extends Controller
                 'description' => 'nullable',
             ]);
             if ($validator->fails()) {
-                return $this->setStatusCode($this::BAD_REQUEST)
+                return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
                     ->setError($validator->errors())
                     ->setMessage($validator->errors()->first())
                     ->errorResponse();
@@ -111,18 +112,18 @@ class TargetController extends Controller
             $data = $validator->validated();
             $target = Target::find($id);
             if (!$target) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target not found')
                     ->setMessage('Update target failed')
                     ->errorResponse();
             }
             $target->update($data);
-            return $this->setStatusCode($this::OK)
+            return $this->setStatusCode(Response::HTTP_OK)
                 ->setData($target)
                 ->setMessage('Update target successfully')
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->setMessage('Update target failed')
                 ->errorResponse();
@@ -134,18 +135,18 @@ class TargetController extends Controller
         try {
             $target = Target::find($id);
             if (!$target) {
-                return $this->setStatusCode($this::NOT_FOUND)
+                return $this->setStatusCode(Response::HTTP_NOT_FOUND)
                     ->setError('Target not found')
                     ->setMessage('Delete target failed')
                     ->errorResponse();
             }
             $target->delete();
-            return $this->setStatusCode($this::OK)
+            return $this->setStatusCode(Response::HTTP_OK)
                 ->setData($target)
                 ->setMessage('Delete target successfully')
                 ->successResponse();
         } catch (Exception $e) {
-            return $this->setStatusCode($this::INTERNAL_SERVER_ERROR)
+            return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->setMessage('Delete target failed')
                 ->errorResponse();

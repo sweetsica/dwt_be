@@ -57,7 +57,7 @@ class RoleAuthorization
     private function unauthorized($message = null)
     {
         return $this->setMessage($message ?? 'You are not authorized to access this resource')
-            ->setStatusCode($this::UNAUTHORIZED)
+            ->setStatusCode(Response::HTTP_UNAUTHORIZED)
             ->errorResponse();
     }
 }
