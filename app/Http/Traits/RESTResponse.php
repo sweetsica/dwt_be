@@ -3,6 +3,7 @@
 namespace App\Http\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\PaginatedResourceResponse;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 
@@ -29,6 +30,7 @@ trait RESTResponse
 
     public function setData(mixed $data): self
     {
+        //check if data is paginated data
         $this->data = $data;
         return $this;
     }

@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\KpiKeyController;
 use App\Http\Controllers\Api\TargetController;
 use App\Http\Controllers\Api\TargetDetailController;
 use App\Http\Controllers\Api\TargetLogController;
+use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
 
 use Illuminate\Http\Request;
@@ -50,4 +52,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('targets', TargetController::class)->middleware('auth.role:manager,admin');
     Route::apiResource('target-details', TargetDetailController::class)->middleware('auth.role:manager,admin');
     Route::apiResource('target-logs', TargetLogController::class)->middleware('auth.role:user,manager,admin');
+    Route::apiResource('kpi-keys', KpiKeyController::class)->middleware('auth.role:manager,admin');
+    Route::apiResource('units', UnitController::class)->middleware('auth.role:manager,admin');
 });

@@ -89,11 +89,11 @@ class AuthController extends Controller
 
             $validated = $validated->validated();
 
-            if(!in_array($validated['sex'], ['male', 'female'])) {
+            if (!in_array($validated['sex'], ['male', 'female'])) {
                 return $this->setStatusCode(Response::HTTP_BAD_REQUEST)
-                ->setError("Sex can only be male or female")
-                ->setMessage('Register failed: Sex can only be male or female')
-                ->errorResponse();
+                    ->setError("Sex can only be male or female")
+                    ->setMessage('Register failed: Sex can only be male or female')
+                    ->errorResponse();
             }
 
             $validated['role'] = 'user';

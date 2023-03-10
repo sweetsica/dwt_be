@@ -31,4 +31,12 @@ class TargetLog extends Model
     {
         return $this->belongsTo(TargetDetail::class);
     }
+
+    public function kpiKeys()
+    {
+        return $this
+        ->belongsToMany(KpiKey::class, 'target_log_kpi_key', 'target_log_id', 'kpi_key_id')
+        ->withPivot('quantity')
+        ->withTimestamps();
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TargetDetailResource;
 use App\Http\Traits\RESTResponse;
 use App\Models\Target;
 use App\Models\TargetDetail;
@@ -49,9 +50,10 @@ class TargetDetailController extends Controller
                 ->with('target')
                 ->with('user')
                 ->with('targetLogs')
+                ->with('targetLogs.kpiKeys')
                 ->paginate($limit);
 
-            return $this->setData($targetDetailsPagianted)
+            return $this->setData(TargetDetailResource::collection($targetDetailsPagianted)->response()->getData(true))
                 ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
         } catch (Exception $e) {
@@ -117,8 +119,8 @@ class TargetDetailController extends Controller
                     ->setMessage('Get target detail failed')
                     ->errorResponse();
             }
-            $res = $targetDetail->load('target')->load('user')->load('targetLogs');
-            return $this->setData($res)
+            $res = $targetDetail->load('target')->load('user')->load('targetLogs')->load('targetLogs.kpiKeys');
+            return $this->setData(new TargetDetailResource($res))
                 ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
         } catch (Exception $e) {
@@ -128,7 +130,8 @@ class TargetDetailController extends Controller
         }
     }
 
-    public function update($id) {
+    public function update($id)
+    {
         try {
             $validator = Validator::make(request()->all(), [
                 'name' => 'nullable',
@@ -151,7 +154,7 @@ class TargetDetailController extends Controller
                     ->errorResponse();
             }
 
-            if(request()->target_id) {
+            if (request()->target_id) {
                 $target = Target::find(request()->target_id);
                 if (!$target) {
                     return $this->setStatusCode(Response::HTTP_NOT_FOUND)
@@ -175,8 +178,7 @@ class TargetDetailController extends Controller
             return $this->setData($targetDetail)
                 ->setStatusCode(Response::HTTP_OK)
                 ->successResponse();
-
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->setError($e->getMessage())
                 ->errorResponse();
