@@ -32,7 +32,7 @@ class DepartmentController extends Controller
                 $departments = Departement::where('name', 'like', "%$q%")
                     ->orWhere('description', 'like', "%$q%")
                     ->paginate($limit);
-                    findOrFail
+                   
                 return $this->setData($departments)
                     ->setMessage('Search departments successfully')
                     ->successResponse();
