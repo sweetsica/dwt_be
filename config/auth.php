@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api', //change this from web to api so when use auth() it will use the api guard not the web or you can use auth('api')
         'passwords' => 'users',
     ],
 
@@ -38,6 +38,11 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
+            'provider' => 'users',
+        ],
+        //add this
+        'api' => [
+            'driver' => 'jwt',
             'provider' => 'users',
         ],
     ],
