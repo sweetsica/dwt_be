@@ -34,6 +34,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        //drop foreign key
+        Schema::table('target_logs', function (Blueprint $table) {
+            $table->dropForeign(['target_detail_id']);
+        });
         Schema::dropIfExists('target_logs');
     }
 };

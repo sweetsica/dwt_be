@@ -27,6 +27,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        //drop foreign key if exists
+        Schema::table('kpi_keys', function (Blueprint $table) {
+            $table->dropForeign(['unit_id']);
+        });
         Schema::dropIfExists('kpi_keys');
     }
 };
