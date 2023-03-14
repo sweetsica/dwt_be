@@ -76,7 +76,12 @@ class UserController extends Controller
                 'address' => 'required',
                 'dob' => 'required|date',
                 'doj' => 'required|date',
-                'role' => 'required'
+                'role' => 'required',
+                'departement_id' => 'required|exists:departements,id',
+                'position_id' => 'required|exists:positions,id',
+                'position_level_id' => 'required|exists:position_levels,id',
+                'salary_fund' => 'required|numeric',
+
             ]);
             if ($validated->fails()) {
                 return $this->setStatusCode(Response::HTTP_BAD_REQUEST)

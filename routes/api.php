@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\KpiKeyController;
+use App\Http\Controllers\Api\PositionControler;
+use App\Http\Controllers\Api\PositionLevelControler;
 use App\Http\Controllers\Api\TargetController;
 use App\Http\Controllers\Api\TargetDetailController;
 use App\Http\Controllers\Api\TargetLogController;
@@ -54,4 +57,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('target-logs', TargetLogController::class)->middleware('auth.role:user,manager,admin');
     Route::apiResource('kpi-keys', KpiKeyController::class)->middleware('auth.role:manager,admin');
     Route::apiResource('units', UnitController::class)->middleware('auth.role:manager,admin');
+    Route::apiResource('departments', DepartmentController::class);
+    Route::apiResource('positions', PositionControler::class);
+    Route::apiResource('position-levels', PositionLevelControler::class);
 });

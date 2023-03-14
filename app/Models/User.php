@@ -27,7 +27,11 @@ class User extends Authenticatable implements JWTSubject
         'dob',
         'doj',
         'phone',
-        'address'
+        'address',
+        'departement_id',
+        'position_id',
+        'position_level_id',
+        'salary_fund',
     ];
 
     /**
@@ -53,7 +57,8 @@ class User extends Authenticatable implements JWTSubject
     public const ROLES = [
         'user' => 'user',
         'admin' => 'admin',
-        'manager' => 'manager',
+        'manager' => 'manager'
+
     ];
 
 
@@ -72,8 +77,23 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function targetDetails ()
+    public function targetDetails()
     {
         return $this->hasMany(TargetDetail::class);
+    }
+
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class, 'departement_id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
+
+    public function positionLevel()
+    {
+        return $this->belongsTo(PositionLevel::class, 'position_level_id');
     }
 }
